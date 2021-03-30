@@ -13,7 +13,7 @@ jobs:
           keys:
             - go-modules-v1-{{ checksum "go.sum" }}
       - run:
-          name : unit tests
+          name : Unit tests
           command: go test ./...
       - save_cache:
           key: go-modules-v1-{{ checksum "go.sum" }}
