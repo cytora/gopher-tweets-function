@@ -1,12 +1,13 @@
 version: 2.1
 
-orbs:
-  aws-sam-serverless: circleci/aws-sam-serverless@3.0.0
+executors:
+  default:
+    docker:
+      - image: xliiauo/go-sam-builder:latest
 
 jobs:
   test:
-    docker:
-      - image: circleci/golang:1.15
+    executor: default
     steps:
       - checkout
       - restore_cache:
@@ -19,9 +20,30 @@ jobs:
           key: go-modules-v1-{{ checksum "go.sum" }}
           paths:
             - /root/go/pkg/mod
+  build-deploy:
+    executor: default
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-modules-v1-{{ checksum "go.sum" }}
+      - run:
+          name : Sam build
+          command: make
+      - save_cache:
+          key: go-modules-v1-{{ checksum "go.sum" }}
+          paths:
+            - /root/go/pkg/mod
 
 workflows:
   version: 2
-  build_and_push:
+  build_and_deploy:
     jobs:
       - test
+      - build-deploy:
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - master
