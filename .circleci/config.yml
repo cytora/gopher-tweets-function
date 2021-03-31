@@ -28,8 +28,11 @@ jobs:
           keys:
             - go-modules-v1-{{ checksum "go.sum" }}
       - run:
-          name : Sam build
+          name : Build artifacts
           command: make
+      - run:
+          name: Deploy stack
+          command: make deploy
       - save_cache:
           key: go-modules-v1-{{ checksum "go.sum" }}
           paths:

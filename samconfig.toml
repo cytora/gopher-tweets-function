@@ -1,0 +1,9 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "gopher-tweets"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-lw03zyiwn25m"
+s3_prefix = "gopher-tweets"
+region = "eu-west-1"
+capabilities = "CAPABILITY_IAM"
