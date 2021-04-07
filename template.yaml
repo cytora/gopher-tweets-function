@@ -8,6 +8,10 @@ Globals:
   Function:
     Timeout: 5
 
+  Api:
+    EndpointConfiguration: REGIONAL
+    Cors: "*"
+
 Resources:
   GopherTweetsFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
