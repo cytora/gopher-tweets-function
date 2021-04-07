@@ -44,8 +44,9 @@ func handler(_ events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, e
 		Body:       fmt.Sprintf("Hello lovely, %v", string(ip)),
 		StatusCode: 200,
 		Headers: map[string]string{
-			"Access-Control-Allow-Origin":  "*",
+			"Access-Control-Allow-Headers": "*",
 			"Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+			"Access-Control-Allow-Origin":  "*",
 		},
 	}, nil
 }
