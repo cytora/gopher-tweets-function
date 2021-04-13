@@ -113,20 +113,6 @@ brew update
 brew upgrade golang
 ```
 
-#### Chocolatey (Windows)
-
-Issue the following command from the powershell:
-
-```shell
-choco install golang
-```
-
-If it's already installed, run the following command to ensure it's the latest version:
-
-```shell
-choco upgrade golang
-```
-
 ## Bringing to the next level
 
 Here are a few ideas that you can use to get more acquainted as to how this overall process works:
