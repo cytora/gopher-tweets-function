@@ -1,2 +1,4 @@
 .idea/
 .aws-sam/
+
+env.json

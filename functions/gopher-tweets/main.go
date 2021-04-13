@@ -1,54 +1,57 @@
 package main
 
 import (
-	"errors"
-	"fmt"
-	"io/ioutil"
-	"net/http"
+	"encoding/json"
+	"os"
+
+	"github.com/cytora/gopher-tweets-function/model"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/dghubble/go-twitter/twitter"
+	"github.com/dghubble/oauth1"
 )
 
 var (
-	// DefaultHTTPGetAddress Default Address
-	DefaultHTTPGetAddress = "https://checkip.amazonaws.com"
+	twitterConsumerKey       = os.Getenv("TWITTER_CONSUMER_KEY")
+	twitterConsumerSecret    = os.Getenv("TWITTER_CONSUMER_SECRET")
+	twitterAccessToken       = os.Getenv("TWITTER_ACCESS_TOKEN")
+	twitterAccessTokenSecret = os.Getenv("TWITTER_TOKEN_ACCESS_TOKEN_SECRET")
 
-	// ErrNoIP No IP found in response
-	ErrNoIP = errors.New("No IP in HTTP response")
-
-	// ErrNon200Response non 200 status code in response
-	ErrNon200Response = errors.New("Non 200 Response found")
+	clt *twitter.Client
 )
 
-func handler(_ events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	resp, err := http.Get(DefaultHTTPGetAddress)
+func init() {
+	if clt == nil {
+		config := oauth1.NewConfig(twitterConsumerKey, twitterConsumerSecret)
+		token := oauth1.NewToken(twitterAccessToken, twitterAccessTokenSecret)
+		httpClient := config.Client(oauth1.NoContext, token)
+		clt = twitter.NewClient(httpClient)
+	}
+}
+
+func handler(r events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	var req model.PostTweetRequest
+	_ = json.Unmarshal([]byte(r.Body), &req)
+
+	t, _, err := clt.Statuses.Update(req.Body, nil)
 	if err != nil {
-		return events.APIGatewayProxyResponse{}, err
+		return model.Response{
+			Body:  nil,
+			Error: err,
+		}.APIGatewayProxyResponse()
 	}
 
-	if resp.StatusCode != 200 {
-		return events.APIGatewayProxyResponse{}, ErrNon200Response
+	res := model.PostTweetResponse{
+		ID:      t.ID,
+		Message: "tweet published",
 	}
 
-	ip, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return events.APIGatewayProxyResponse{}, err
-	}
-
-	if len(ip) == 0 {
-		return events.APIGatewayProxyResponse{}, ErrNoIP
-	}
-
-	return events.APIGatewayProxyResponse{
-		Body:       fmt.Sprintf("Hello lovely, %v", string(ip)),
+	return model.Response{
 		StatusCode: 200,
-		Headers: map[string]string{
-			"Access-Control-Allow-Headers": "*",
-			"Access-Control-Allow-Methods": "OPTIONS,POST,GET",
-			"Access-Control-Allow-Origin":  "*",
-		},
-	}, nil
+		Body:       res,
+		Error:      nil,
+	}.APIGatewayProxyResponse()
 }
 
 func main() {
