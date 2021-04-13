@@ -1,4 +1,4 @@
-.PHONY: build deploy start
+.PHONY: build deploy start test
 
 build:
 	sam build
@@ -8,3 +8,6 @@ deploy:
 
 start:
 	sam local start-api -n env.json
+
+test:
+	go test ./...
