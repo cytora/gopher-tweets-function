@@ -1,7 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: >
-  gopher-tweets
+Description: Gopher Tweets
 
 Globals:
   Function:
@@ -23,10 +22,10 @@ Resources:
             Method: ANY
       Environment:
         Variables:
-          TWITTER_CONSUMER_KEY:
-          TWITTER_CONSUMER_SECRET:
-          TWITTER_ACCESS_TOKEN:
-          TWITTER_TOKEN_ACCESS_TOKEN_SECRET:
+          TWITTER_CONSUMER_KEY: ""
+          TWITTER_CONSUMER_SECRET: ""
+          TWITTER_ACCESS_TOKEN: ""
+          TWITTER_TOKEN_ACCESS_TOKEN_SECRET: ""
 
 Outputs:
   GopherTweetsHelloWorldAPI:
