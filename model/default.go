@@ -1,9 +1,9 @@
 package model
 
 import (
-	"encoding/json"
+	"net/http"
 
-	"github.com/aws/aws-lambda-go/events"
+	"github.com/davyzhang/agw"
 )
 
 var (
@@ -20,19 +20,12 @@ type Response struct {
 	Error      error
 }
 
-func (r Response) APIGatewayProxyResponse() (events.APIGatewayProxyResponse, error) {
-	if r.Error != nil {
-		return events.APIGatewayProxyResponse{}, r.Error
+func (r Response) Write(w http.ResponseWriter) {
+	resp := w.(*agw.LPResponse)
+	resp.WriteHeader(r.StatusCode)
+	h := resp.Header()
+	for name, value := range defaultHeaders {
+		h[name] = []string{value}
 	}
-
-	body, err := json.Marshal(r.Body)
-	if err != nil {
-		return events.APIGatewayProxyResponse{}, r.Error
-	}
-
-	return events.APIGatewayProxyResponse{
-		Headers:    defaultHeaders,
-		StatusCode: r.StatusCode,
-		Body:       string(body),
-	}, nil
+	resp.WriteBody(r.Body, false)
 }

@@ -24,8 +24,8 @@ Resources:
         Variables:
           TWITTER_CONSUMER_KEY: ""
           TWITTER_CONSUMER_SECRET: ""
-          TWITTER_ACCESS_TOKEN: ""
-          TWITTER_TOKEN_ACCESS_TOKEN_SECRET: ""
+          TWITTER_LOGIN_CALLBACK: ""
+          TWITTER_LOGIN_CALLBACK: ""
 
 Outputs:
   GopherTweetsHelloWorldAPI:
