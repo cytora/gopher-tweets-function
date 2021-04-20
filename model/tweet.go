@@ -18,6 +18,7 @@ type TwitterAuthMessage struct {
 }
 
 type TwitterProfile struct {
-	UserName string `json:"username"`
-	Error string `json:"error"`
+	IsLoggedIn bool   `json:"isLoggedIn"`
+	UserName   string `json:"username"`
+	Error      string `json:"error"`
 }

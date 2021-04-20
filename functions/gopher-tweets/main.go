@@ -24,8 +24,9 @@ var (
 	twitterConsumerSecret = os.Getenv("TWITTER_CONSUMER_SECRET")
 	twitterLoginCallback  = os.Getenv("TWITTER_LOGIN_CALLBACK")
 	sessionSecret         = os.Getenv("SESSION_SECRET_KEY")
-	// sessionStore encodes and decodes session data stored in signed cookies
-	store = sessions.NewCookieStore([]byte(sessionSecret), nil)
+	frontendRedirect      = os.Getenv("FRONTEND_REDIRECT")
+
+	store *sessions.CookieStore
 	clt   *twitter.Client
 )
 
@@ -36,13 +37,20 @@ const (
 	sessionUserKey      = "twitterID"
 	sessionUsername     = "twitterUsername"
 	authEndpoint        = "/twitter/login"
+	profileEndpoint     = "/twitter/profile"
 )
+
+func init() {
+	// sessionStore encodes and decodes session data stored in signed cookies
+	store = sessions.NewCookieStore([]byte(sessionSecret), nil)
+	store.Config.SameSite = http.SameSiteLaxMode
+}
 
 func getTwitterClient(req *http.Request) (*twitter.Client, error) {
 	config := oauth1.NewConfig(twitterConsumerKey, twitterConsumerSecret)
 	session, err := store.Get(req, sessionName)
 	if err != nil {
-		fmt.Printf("%v\n", err)
+		fmt.Printf("Error fetching session %v\n", err)
 		return nil, err
 	}
 	access := session.Values[sessionAccessKey]
@@ -56,6 +64,7 @@ func getTwitterClient(req *http.Request) (*twitter.Client, error) {
 }
 
 func tweetHandler(w http.ResponseWriter, req *http.Request) {
+	fmt.Printf("Tweet REQUEST: %+v\n", req)
 	clt, err := getTwitterClient(req)
 	if err != nil {
 		r := model.Response{
@@ -114,8 +123,7 @@ func main() {
 
 	mux.Handle(authEndpoint, twitterLogin.LoginHandler(oauth1Config, nil))
 	mux.Handle("/twitter/callback", twitterLogin.CallbackHandler(oauth1Config, issueSession(), nil))
-	mux.HandleFunc("/profile", profileHandler)
-	mux.HandleFunc("/twitter/reverse", reverseHandler)
+	mux.HandleFunc(profileEndpoint, profileHandler)
 	mux.HandleFunc("/tweet", tweetHandler)
 
 	lambda.Start(agw.Handler(mux))
@@ -162,36 +170,33 @@ func issueSession() http.Handler {
 			return
 		}
 
-		r := model.Response{
-			StatusCode: http.StatusOK,
-			Body:       model.TwitterAuthMessage{Message: "twitter auth success"},
-			Error:      nil,
-		}
-		r.Write(w)
-
+		http.Redirect(w, req, frontendRedirect, http.StatusFound)
 	}
 	return http.HandlerFunc(fn)
 }
 
 // profileHandler shows a personal profile or a login button.
 func profileHandler(w http.ResponseWriter, req *http.Request) {
+	fmt.Printf("REQUEST: %v\n", req)
 	session, err := store.Get(req, sessionName)
 	if err != nil {
 		r := model.Response{
-			StatusCode: http.StatusInternalServerError,
+			StatusCode: http.StatusNotFound,
 			Body:       model.TwitterProfile{Error: err.Error()},
 			Error:      nil,
 		}
+		fmt.Printf("MISSING STORE RESPONSE: %v\n", r)
 		r.Write(w)
 		return
 	}
 	user := session.Values[sessionUsername]
 	if user == nil {
 		r := model.Response{
-			StatusCode: http.StatusInternalServerError,
+			StatusCode: http.StatusNotFound,
 			Body:       model.TwitterProfile{Error: "nil user"},
 			Error:      nil,
 		}
+		fmt.Printf("NIL USER RESPONSE: %v\n", r)
 		r.Write(w)
 		return
 	}
@@ -199,40 +204,9 @@ func profileHandler(w http.ResponseWriter, req *http.Request) {
 	// authenticated profile
 	r := model.Response{
 		StatusCode: http.StatusOK,
-		Body:       model.TwitterProfile{UserName: user.(string)},
+		Body:       model.TwitterProfile{IsLoggedIn: true, UserName: user.(string)},
 		Error:      nil,
 	}
-	r.Write(w)
-}
-
-// reverseHandler shows a personal profile or a login button.
-func reverseHandler(w http.ResponseWriter, req *http.Request) {
-	//session, err := store.Get(req, sessionName)
-	//if err != nil {
-	//	w.WriteHeader(http.StatusInternalServerError)
-	//	w.(*agw.LPResponse).WriteBody(model.Response{
-	//		StatusCode: http.StatusInternalServerError,
-	//		Body:       model.TwitterProfile{Error: err.Error()},
-	//		Error:      nil,
-	//	}, false)
-	//	return
-	//}
-	//user := session.Values[sessionUsername]
-	//if user == nil {
-	//	w.WriteHeader(http.StatusInternalServerError)
-	//	w.(*agw.LPResponse).WriteBody(model.Response{
-	//		StatusCode: http.StatusInternalServerError,
-	//		Body:       model.TwitterProfile{Error: "nil user"},
-	//		Error:      nil,
-	//	}, false)
-	//	return
-	//}
-
-	// authenticated profile
-	r := model.Response{
-		StatusCode: http.StatusOK,
-		Body:       nil,
-		Error:      nil,
-	}
+	fmt.Printf("OK RESPONSE: %v\n", r)
 	r.Write(w)
 }
