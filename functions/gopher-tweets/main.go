@@ -124,7 +124,7 @@ func main() {
 	mux.Handle(authEndpoint, twitterLogin.LoginHandler(oauth1Config, nil))
 	mux.Handle("/twitter/callback", twitterLogin.CallbackHandler(oauth1Config, issueSession(), nil))
 	mux.HandleFunc(profileEndpoint, profileHandler)
-	mux.HandleFunc("/tweet", tweetHandler)
+	mux.HandleFunc("/tweets", tweetHandler)
 
 	lambda.Start(agw.Handler(mux))
 }
