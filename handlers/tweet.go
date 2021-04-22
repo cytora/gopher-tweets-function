@@ -26,7 +26,6 @@ func NewTweetHandler(cookieManager *auth.CookieManager) *TweetHandler {
 
 // Tweet posts a tweet after the user has already been authenticated
 func (h *TweetHandler) Tweet(w http.ResponseWriter, req *http.Request) {
-	fmt.Printf("Tweet REQUEST: %+v\n", req)
 	clt, err := h.getTwitterClient(req)
 	if err != nil {
 		r := model.Response{

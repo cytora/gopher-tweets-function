@@ -79,9 +79,9 @@ func SaveLoginCookie(w http.ResponseWriter, screenName string) {
 	loginCookie := &http.Cookie{
 		Name:     sessionLoginName,
 		Value:    screenName,
+		Path:     "/",
 		HttpOnly: false,
 		Secure:   false,
 	}
-	http.SetCookie(w, loginCookie)
-	fmt.Printf("%v", loginCookie)
+	w.Header().Set("Set-Cookie", loginCookie.String())
 }
