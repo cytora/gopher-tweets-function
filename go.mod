@@ -9,6 +9,7 @@ require (
 	github.com/dghubble/gologin/v2 v2.3.0
 	github.com/dghubble/oauth1 v0.7.0
 	github.com/dghubble/sessions v0.1.0
+	github.com/google/martian v2.1.0+incompatible
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/securecookie v1.1.1 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect

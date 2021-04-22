@@ -16,9 +16,3 @@ type AliveResponse struct {
 type TwitterAuthMessage struct {
 	Message string `json:"message"`
 }
-
-type TwitterProfile struct {
-	IsLoggedIn bool   `json:"isLoggedIn"`
-	UserName   string `json:"username"`
-	Error      string `json:"error"`
-}
