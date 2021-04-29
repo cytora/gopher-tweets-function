@@ -11,6 +11,7 @@ require (
 	github.com/dghubble/sessions v0.1.0
 	github.com/google/martian v2.1.0+incompatible
 	github.com/gorilla/mux v1.8.0
-	github.com/gorilla/securecookie v1.1.1 // indirect
+	github.com/gorilla/securecookie v1.1.1
 	github.com/json-iterator/go v1.1.10 // indirect
+	github.com/stretchr/testify v1.6.1
 )

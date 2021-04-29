@@ -1,7 +1,7 @@
 package model
 
 type PostTweetRequest struct {
-	Body string `json:"body"`
+	Tweet string `json:"tweet"`
 }
 
 type PostTweetResponse struct {

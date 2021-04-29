@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/google/martian/log"
 
 	"github.com/aws/aws-lambda-go/lambda"
@@ -12,29 +14,30 @@ import (
 )
 
 func main() {
-	cookieManager, err := auth.NewCookieManager()
-	if err != nil {
-		log.Errorf("failed to create cookie manager:%s", err.Error())
+	frontendRedirect, ok := os.LookupEnv("FRONTEND_REDIRECT")
+	if !ok {
+		log.Errorf("frontend redirect not configured")
 		return
 	}
+	sessionKey, ok := os.LookupEnv("SESSION_SECRET_KEY")
+	if !ok {
+		log.Errorf("session key not configured")
+		return
+	}
+
 	oauthConfig, err := auth.NewAuthorizationConfig()
 	if err != nil {
 		log.Errorf("failed to create authorization config:%s", err.Error())
 		return
 	}
-	loginHandler, err := handlers.NewLoginHandler(cookieManager)
-	if err != nil {
-		log.Errorf("failed to create login handler:%s", err.Error())
-		return
-	}
-	tweetHandler := handlers.NewTweetHandler(cookieManager)
+	loginHandler := handlers.NewLoginHandler(frontendRedirect, sessionKey)
+	tweetHandler := handlers.NewTweetHandler(sessionKey)
 
 	mux := mux.NewRouter()
 	mux.HandleFunc(handlers.HealthCheckEndpoint, handlers.Health)
 	mux.Handle(handlers.TwitterAuthEndpoint, twitterLogin.LoginHandler(oauthConfig, nil))
 	mux.Handle(handlers.TwitterCallbackEndpoint, twitterLogin.CallbackHandler(oauthConfig, loginHandler.Login(), nil))
 	mux.HandleFunc(handlers.TweetEndpoint, tweetHandler.Tweet)
-	mux.HandleFunc(handlers.ProfileEndpoint, tweetHandler.Profile)
 
 	lambda.Start(agw.Handler(mux))
 }

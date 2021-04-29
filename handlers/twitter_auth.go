@@ -1,12 +1,10 @@
 package handlers
 
 import (
-	"errors"
+	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/cytora/gopher-tweets-function/auth"
-	"github.com/cytora/gopher-tweets-function/model"
 	oauth1Login "github.com/dghubble/gologin/v2/oauth1"
 	twitterLogin "github.com/dghubble/gologin/v2/twitter"
 )
@@ -17,19 +15,15 @@ const (
 )
 
 type LoginHandler struct {
-	cookieManager *auth.CookieManager
-	redirect      string
+	redirect   string
+	sessionKey string
 }
 
-func NewLoginHandler(cookieManager *auth.CookieManager) (*LoginHandler, error) {
-	frontendRedirect, ok := os.LookupEnv("FRONTEND_REDIRECT")
-	if !ok {
-		return nil, errors.New("frontend redirect not configured")
-	}
+func NewLoginHandler(redirect, sessionKey string) *LoginHandler {
 	return &LoginHandler{
-		cookieManager: cookieManager,
-		redirect:      frontendRedirect,
-	}, nil
+		redirect:   redirect,
+		sessionKey: sessionKey,
+	}
 }
 
 // Login issues a cookie session after successful Twitter login
@@ -46,19 +40,11 @@ func (h *LoginHandler) Login() http.Handler {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
-		if err := h.cookieManager.SaveCredentials(w, twitterUser.ScreenName, accessToken, accessSecret); err != nil {
-			r := model.Response{
-				StatusCode: http.StatusInternalServerError,
-				Body:       nil,
-				Error:      err,
-			}
-			r.Write(w)
-			return
+		creds := &auth.Credentials{
+			ExtAccessKey:    accessToken,
+			ExtAccessSecret: accessSecret,
 		}
-
-		auth.SaveLoginCookie(w, twitterUser.ScreenName)
-		http.Redirect(w, req, h.redirect, http.StatusFound)
+		http.Redirect(w, req, fmt.Sprintf("%s/?token=%s&user=%s", h.redirect, creds.Encode(h.sessionKey), twitterUser.ScreenName), http.StatusFound)
 	}
 	return http.HandlerFunc(fn)
 }
