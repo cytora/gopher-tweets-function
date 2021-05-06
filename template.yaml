@@ -10,16 +10,16 @@ Parameters:
   TwitterConsumerKey:
     Type: String
     Default: ""
-  TWITTER_CONSUMER_SECRET:
+  TwitterConsumerSecret:
     Type: String
     Default: ""
-  TWITTER_LOGIN_CALLBACK:
+  TwitterLoginCallback:
     Type: String
     Default: ""
-  FRONTEND_REDIRECT:
+  FrontendRedirect:
     Type: String
     Default: ""
-  SESSION_SECRET_KEY:
+  SessionSecretKey:
     Type: String
     Default: ""
 
