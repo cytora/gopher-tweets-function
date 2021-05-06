@@ -10,18 +10,18 @@ Parameters:
   TwitterConsumerKey:
     Type: String
     Default: ""
-  TwitterConsumerSecret:
-    Type: String
-    Default: ""
-  TwitterLoginCallback:
-    Type: String
-    Default: ""
-  FrontendRedirect:
-    Type: String
-    Default: ""
-  SessionSecretKey:
-    Type: String
-    Default: ""
+#  TwitterConsumerSecret:
+#    Type: String
+#    Default: ""
+#  TwitterLoginCallback:
+#    Type: String
+#    Default: ""
+#  FrontendRedirect:
+#    Type: String
+#    Default: ""
+#  SessionSecretKey:
+#    Type: String
+#    Default: ""
 
 Resources:
   GopherTweetsFunction:
@@ -39,7 +39,8 @@ Resources:
             Method: ANY
       Environment:
         Variables:
-          TWITTER_CONSUMER_KEY: ""
+          TWITTER_CONSUMER_KEY:
+            - Ref: TwitterConsumerKey
           TWITTER_CONSUMER_SECRET: ""
           TWITTER_LOGIN_CALLBACK: ""
           FRONTEND_REDIRECT: ""
