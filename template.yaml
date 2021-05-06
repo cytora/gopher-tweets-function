@@ -10,9 +10,9 @@ Parameters:
   TwitterConsumerKey:
     Type: String
     Default: ""
-#  - TwitterConsumerSecret:
-#      Type: String
-#      Default: ""
+  TwitterConsumerSecret:
+    Type: String
+    Default: ""
 #  TwitterLoginCallback:
 #    Type: String
 #    Default: ""
@@ -41,8 +41,8 @@ Resources:
         Variables:
           TWITTER_CONSUMER_KEY:
             Ref: TwitterConsumerKey
-#          - TWITTER_CONSUMER_SECRET:
-#              Ref: TwitterConsumerSecret
+          TWITTER_CONSUMER_SECRET:
+            Ref: TwitterConsumerSecret
 #          TWITTER_LOGIN_CALLBACK: ""
 #          FRONTEND_REDIRECT: ""
 #          SESSION_SECRET_KEY: ""
