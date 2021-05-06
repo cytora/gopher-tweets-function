@@ -32,7 +32,7 @@ jobs:
           command: make
       - run:
           name: Deploy stack
-          command: make deploy
+          command: make deploy TWITTER_CONSUMER_KEY=${TWITTER_CONSUMER_KEY}
       - save_cache:
           key: go-modules-v1-{{ checksum "go.sum" }}
           paths:

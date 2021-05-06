@@ -6,6 +6,23 @@ Globals:
   Function:
     Timeout: 5
 
+Parameters:
+  TWITTER_CONSUMER_KEY:
+    Type: String
+    Default: ""
+  TWITTER_CONSUMER_SECRET:
+    Type: String
+    Default: ""
+  TWITTER_LOGIN_CALLBACK:
+    Type: String
+    Default: ""
+  FRONTEND_REDIRECT:
+    Type: String
+    Default: ""
+  SESSION_SECRET_KEY:
+    Type: String
+    Default: ""
+
 Resources:
   GopherTweetsFunction:
     Type: AWS::Serverless::Function
