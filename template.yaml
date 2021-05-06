@@ -13,15 +13,15 @@ Parameters:
   TwitterConsumerSecret:
     Type: String
     Default: ""
-#  TwitterLoginCallback:
-#    Type: String
-#    Default: ""
-#  FrontendRedirect:
-#    Type: String
-#    Default: ""
-#  SessionSecretKey:
-#    Type: String
-#    Default: ""
+  TwitterLoginCallback:
+    Type: String
+    Default: ""
+  FrontendRedirect:
+    Type: String
+    Default: ""
+  SessionSecretKey:
+    Type: String
+    Default: ""
 
 Resources:
   GopherTweetsFunction:
@@ -43,9 +43,12 @@ Resources:
             Ref: TwitterConsumerKey
           TWITTER_CONSUMER_SECRET:
             Ref: TwitterConsumerSecret
-#          TWITTER_LOGIN_CALLBACK: ""
-#          FRONTEND_REDIRECT: ""
-#          SESSION_SECRET_KEY: ""
+          TWITTER_LOGIN_CALLBACK:
+            Ref: TwitterLoginCallback
+          FRONTEND_REDIRECT:
+            Ref: FrontendRedirect
+          SESSION_SECRET_KEY:
+            Ref: SessionSecretKey
 
 Outputs:
   GopherTweetsHelloWorldAPI:
