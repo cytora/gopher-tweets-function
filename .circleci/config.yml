@@ -31,6 +31,9 @@ jobs:
           name : Build artifacts
           command: make
       - run:
+          name: Testing
+          command: env
+      - run:
           name: Deploy stack
           command: make deploy
                      TWITTER_CONSUMER_KEY=${TWITTER_CONSUMER_KEY}
