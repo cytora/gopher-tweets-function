@@ -4,8 +4,8 @@ build:
 	sam build
 
 deploy:
-	sam deploy
-	    --parameter-overrides TwitterConsumerKey=$(TWITTER_CONSUMER_KEY)
+	echo $TWITTER_CONSUMER_KEY && sam deploy
+	    --parameter-overrides TwitterConsumerKey=$TWITTER_CONSUMER_KEY
 	    --no-confirm-changeset --no-fail-on-empty-changeset
 
 start:
