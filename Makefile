@@ -6,7 +6,7 @@ build:
 deploy:
 	sam deploy
 	    --parameter-overrides
-	        ParameterKey=ParameterValue TWITTER_CONSUMER_KEY=$TWITTER_CONSUMER_KEY
+	        ParameterKey=ParameterValue TwitterConsumerKey=$TWITTER_CONSUMER_KEY
 	    --no-confirm-changeset --no-fail-on-empty-changeset
 
 start:

@@ -7,7 +7,7 @@ Globals:
     Timeout: 5
 
 Parameters:
-  TWITTER_CONSUMER_KEY:
+  TwitterConsumerKey:
     Type: String
     Default: ""
   TWITTER_CONSUMER_SECRET:
