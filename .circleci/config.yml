@@ -31,11 +31,8 @@ jobs:
           name : Build artifacts
           command: make
       - run:
-          name: Testing
-          command: env
-      - run:
           name: Deploy stack
-          command: ./deploy.sh
+          command: make deploy
       - save_cache:
           key: go-modules-v1-{{ checksum "go.sum" }}
           paths:
