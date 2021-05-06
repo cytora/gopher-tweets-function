@@ -4,9 +4,7 @@ build:
 	sam build
 
 deploy:
-	sam deploy \
-	    --parameter-overrides TwitterConsumerKey=$(TWITTER_CONSUMER_KEY) TwitterConsumerSecret=$(TWITTER_CONSUMER_SECRET)  \
-	    --no-confirm-changeset --no-fail-on-empty-changeset
+	sam deploy --parameter-overrides TwitterConsumerKey=$(TWITTER_CONSUMER_KEY) TwitterConsumerSecret=$(TWITTER_CONSUMER_SECRET) --no-confirm-changeset --no-fail-on-empty-changeset
 
 start:
 	sam local start-api -n env.json
