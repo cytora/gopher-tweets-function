@@ -40,7 +40,7 @@ Resources:
       Environment:
         Variables:
           TWITTER_CONSUMER_KEY:
-            - Ref: TwitterConsumerKey
+            Ref: TwitterConsumerKey
 #          TWITTER_CONSUMER_SECRET: ""
 #          TWITTER_LOGIN_CALLBACK: ""
 #          FRONTEND_REDIRECT: ""
