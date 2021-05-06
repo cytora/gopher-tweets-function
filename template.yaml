@@ -7,12 +7,12 @@ Globals:
     Timeout: 5
 
 Parameters:
-  TwitterConsumerKey:
-    Type: String
-    Default: ""
-#  TwitterConsumerSecret:
-#    Type: String
-#    Default: ""
+  - TwitterConsumerKey:
+      Type: String
+      Default: ""
+  - TwitterConsumerSecret:
+      Type: String
+      Default: ""
 #  TwitterLoginCallback:
 #    Type: String
 #    Default: ""
@@ -39,9 +39,10 @@ Resources:
             Method: ANY
       Environment:
         Variables:
-          TWITTER_CONSUMER_KEY:
-            Ref: TwitterConsumerKey
-#          TWITTER_CONSUMER_SECRET: ""
+          - TWITTER_CONSUMER_KEY:
+              Ref: TwitterConsumerKey
+          - TWITTER_CONSUMER_SECRET:
+              Ref: TwitterConsumerSecret
 #          TWITTER_LOGIN_CALLBACK: ""
 #          FRONTEND_REDIRECT: ""
 #          SESSION_SECRET_KEY: ""
