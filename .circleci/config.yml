@@ -32,7 +32,12 @@ jobs:
           command: make
       - run:
           name: Deploy stack
-          command: make deploy TWITTER_CONSUMER_KEY=${TWITTER_CONSUMER_KEY}
+          command: make deploy
+                     TWITTER_CONSUMER_KEY=${TWITTER_CONSUMER_KEY}
+                     TWITTER_CONSUMER_SECRET=${TWITTER_CONSUMER_SECRET}
+                     TWITTER_LOGIN_CALLBACK=${TWITTER_LOGIN_CALLBACK}
+                     FRONTEND_REDIRECT=${FRONTEND_REDIRECT}
+                     SESSION_SECRET_KEY=${SESSION_SECRET_KEY}
       - save_cache:
           key: go-modules-v1-{{ checksum "go.sum" }}
           paths:

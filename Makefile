@@ -4,7 +4,10 @@ build:
 	sam build
 
 deploy:
-	sam deploy --parameters ParameterKey=TWITTER_CONSUMER_KEY,ParameterValue=$TWITTER_CONSUMER_KEY --no-confirm-changeset --no-fail-on-empty-changeset
+	sam deploy
+	    --parameter-overrides
+	        ParameterKey=ParameterValue TWITTER_CONSUMER_KEY=$TWITTER_CONSUMER_KEY
+	    --no-confirm-changeset --no-fail-on-empty-changeset
 
 start:
 	sam local start-api -n env.json
