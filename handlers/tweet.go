@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -26,30 +25,24 @@ func NewTweetHandler(sessionKey string) *TweetHandler {
 
 // Tweet posts a tweet after the user has already been authenticated
 func (h *TweetHandler) Tweet(w http.ResponseWriter, req *http.Request) {
-	//These are preflight requests
-	if req.Method == "OPTIONS" {
-		r := model.Response{
-			StatusCode: http.StatusOK,
-			Body: model.PostTweetResponse{
-				Message: "preflight",
-			},
-			Error: nil,
-		}
-		r.Write(w)
-		return
+	switch req.Method {
+	case http.MethodOptions:
+		writePreflight(w)
+	case http.MethodPost:
+		h.postTweet(w, req)
 	}
+}
 
-	var post model.PostTweetRequest
-	// Try to decode the request body into the struct. If there is an error,
-	// respond to the client with the error message and a 400 status code.
-	if err := json.NewDecoder(req.Body).Decode(&post); err != nil {
+func (h *TweetHandler) postTweet(w http.ResponseWriter, req *http.Request) {
+	post, err := model.NewTweetRequest(req)
+	if err != nil {
 		r := model.Response{
 			StatusCode: http.StatusBadRequest,
 			Body:       nil,
 			Error:      fmt.Errorf("error decoding body:%s", err.Error()),
 		}
 		r.Write(w)
-		return
+
 	}
 
 	clt, err := h.getTwitterClient(req)
@@ -62,7 +55,7 @@ func (h *TweetHandler) Tweet(w http.ResponseWriter, req *http.Request) {
 		r.Write(w)
 		return
 	}
-	post.Tweet = fmt.Sprint(post.Tweet, "#serverlessrocks #gophertweets")
+	//post.Tweet = fmt.Sprint(post.Tweet, " #serverlessrocks #gophertweets")
 	t, _, err := clt.Statuses.Update(post.Tweet, nil)
 	if err != nil {
 		r := model.Response{
@@ -99,4 +92,15 @@ func (h *TweetHandler) getTwitterClient(req *http.Request) (*twitter.Client, err
 	token := oauth1.NewToken(creds.ExtAccessKey, creds.ExtAccessSecret)
 	httpClient := config.Client(req.Context(), token)
 	return twitter.NewClient(httpClient), nil
+}
+
+func writePreflight(w http.ResponseWriter) {
+	r := model.Response{
+		StatusCode: http.StatusOK,
+		Body: model.PostTweetResponse{
+			Message: "preflight",
+		},
+		Error: nil,
+	}
+	r.Write(w)
 }

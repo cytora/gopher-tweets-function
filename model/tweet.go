@@ -1,6 +1,12 @@
 package model
 
-type PostTweetRequest struct {
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+)
+
+type TweetRequest struct {
 	Tweet string `json:"tweet"`
 }
 
@@ -10,9 +16,18 @@ type PostTweetResponse struct {
 }
 
 type AliveResponse struct {
-	Alive bool `json:"alive"`
+	Alive   bool   `json:"alive"`
+	Message string `json:"message"`
 }
 
 type TwitterAuthMessage struct {
 	Message string `json:"message"`
+}
+
+func NewTweetRequest(req *http.Request) (*TweetRequest, error) {
+	var post TweetRequest
+	if err := json.NewDecoder(req.Body).Decode(&post); err != nil {
+		return nil, fmt.Errorf("error during tweet decode:%s", err.Error())
+	}
+	return &post, nil
 }

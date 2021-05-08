@@ -12,8 +12,11 @@ const HealthCheckEndpoint = "/health"
 func Health(w http.ResponseWriter, _ *http.Request) {
 	r := model.Response{
 		StatusCode: http.StatusOK,
-		Body:       model.AliveResponse{Alive: true},
-		Error:      nil,
+		Body: model.AliveResponse{
+			Alive:   true,
+			Message: "Welcome to the GopherTweets BE!",
+		},
+		Error: nil,
 	}
 	r.Write(w)
 }

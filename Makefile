@@ -13,7 +13,7 @@ deploy:
       --no-confirm-changeset --no-fail-on-empty-changeset
 
 start:
-	sam local start-api -n env.json
+	source env.sh && sam local start-api
 
 test:
 	go test ./...
