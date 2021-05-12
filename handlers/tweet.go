@@ -55,7 +55,7 @@ func (h *TweetHandler) postTweet(w http.ResponseWriter, req *http.Request) {
 		r.Write(w)
 		return
 	}
-	post.Tweet = fmt.Sprint(post.Tweet, " #serverlessrocks #gophertweets")
+	//post.Tweet = fmt.Sprint(post.Tweet, " #serverlessrocks #gophertweets")
 	t, _, err := clt.Statuses.Update(post.Tweet, nil)
 	if err != nil {
 		r := model.Response{
